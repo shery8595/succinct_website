@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Succinct</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #ff6bff;
+            --secondary: #9c27b0;
+            --accent: #ff00ff;
+            --purple: #9c27b0;
+            --deep-purple: #673ab7;
+            --dark: #3d0a33;
+            --light: #ffeaff;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #ff0080, #9c27b0, #673ab7);
+            color: var(--light);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, 
+                rgba(255, 0, 255, 0.15) 0%,
+                rgba(255, 107, 255, 0.1) 50%,
+                transparent 100%);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+        
+        .logo-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: url('images_succint/succinct.png');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 50% auto;
+            opacity: 0.25;
+            z-index: 0;
+            filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.7)) brightness(0) invert(1);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.25; filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.7)) brightness(0) invert(1); }
+            50% { opacity: 0.35; filter: drop-shadow(0 0 30px rgba(255, 0, 255, 0.9)) brightness(0) invert(1); }
+        }
+        
+        /* SVG Logo for fallback and animation */
+        .logo-svg {
+            position: fixed;
+            bottom: -80px;
+            right: -80px;
+            width: 300px;
+            height: 300px;
+            z-index: 0;
+            opacity: 0.2;
+            animation: rotateSlow 30s linear infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.5));
+        }
+        
+        .logo-svg path {
+            fill: #ff0080;
+        }
+        
+        @keyframes rotateSlow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Additional SVG logo for top left */
+        .logo-svg-top {
+            position: fixed;
+            top: -80px;
+            left: -80px;
+            width: 250px;
+            height: 250px;
+            z-index: 0;
+            opacity: 0.15;
+            animation: rotateSlow 25s linear infinite reverse;
+            filter: drop-shadow(0 0 10px rgba(255, 0, 255, 0.4));
+        }
+        
+        .title {
+            font-size: 8rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(255, 0, 255, 0.7);
+            position: relative;
+            z-index: 1;
+            animation: pulsate 3s ease-in-out infinite;
+            letter-spacing: 2px;
+            filter: drop-shadow(0 0 15px rgba(255, 20, 147, 0.8));
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .title:hover {
+            text-shadow: 0 0 60px rgba(255, 255, 255, 1), 
+                         0 0 100px rgba(255, 255, 255, 0.8),
+                         0 0 150px rgba(255, 255, 255, 0.6);
+            filter: drop-shadow(0 0 15px rgba(255, 255, 255, 1))
+                   drop-shadow(0 0 30px rgba(255, 255, 255, 0.8));
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ffffff, #ff69b4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation-play-state: paused;
+        }
+        
+        @keyframes pulsate {
+            0%, 100% { transform: scale(1); filter: brightness(1); }
+            50% { transform: scale(1.03); filter: brightness(1.2); }
+        }
+        
+        .title::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            right: -20px;
+            bottom: -20px;
+            background: radial-gradient(ellipse at center, 
+                       rgba(255, 255, 255, 0.4) 0%, 
+                       rgba(255, 0, 255, 0.2) 40%, 
+                       transparent 70%);
+            z-index: -1;
+            border-radius: 50%;
+            animation: rotate 10s linear infinite;
+            opacity: 0.7;
+            transition: all 0.5s ease;
+        }
+        
+        .title:hover::after {
+            background: radial-gradient(ellipse at center, 
+                       rgba(255, 255, 255, 0.7) 0%, 
+                       rgba(255, 255, 255, 0.4) 30%, 
+                       rgba(255, 0, 255, 0.2) 60%, 
+                       transparent 80%);
+            opacity: 1;
+        }
+        
+        .subtitle {
+            font-size: 1.8rem;
+            margin-top: 1rem;
+            color: var(--light);
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .features {
+            padding: 100px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .feature-card {
+            background: rgba(255, 0, 255, 0.07);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 107, 255, 0.15);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(255, 0, 255, 0.25);
+            border: 1px solid rgba(255, 107, 255, 0.3);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-description {
+            color: var(--light);
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .cta-section {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(45deg, #cc0066, #990066);
+        }
+        
+        .cta-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            color: white;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(255, 0, 255, 0.4);
+        }
+        
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .floating-element {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.5);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .title {
+                font-size: 4rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+                padding: 50px 20px;
+            }
+            
+            .feature-card {
+                padding: 30px;
+            }
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 3rem;
+            margin: 0 0 60px;
+            background: linear-gradient(45deg, var(--accent), var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+        }
+        
+        .faq-section {
+            padding: 100px 20px;
+            background: linear-gradient(to bottom, rgba(204, 0, 102, 0.8), rgba(230, 0, 126, 0.6));
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .faq-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+        }
+        
+        .faq-item {
+            background: rgba(255, 0, 255, 0.07);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 107, 255, 0.15);
+        }
+        
+        .faq-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 0, 255, 0.2);
+            border: 1px solid rgba(255, 107, 255, 0.3);
+        }
+        
+        .faq-question {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin: 0 0 15px 0;
+        }
+        
+        .faq-answer {
+            color: var(--light);
+            opacity: 0.9;
+            line-height: 1.6;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 40px;
+            }
+            
+            .faq-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .faq-item {
+                padding: 20px;
+            }
+            
+            .faq-question {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Hero logo styling */
+        .hero-logo {
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            z-index: 0;
+            opacity: 0.15;
+            filter: drop-shadow(0 0 30px rgba(255, 0, 255, 0.9));
+            animation: pulsateSlow 5s ease-in-out infinite;
+        }
+        
+        @keyframes pulsateSlow {
+            0%, 100% { opacity: 0.15; transform: scale(1); }
+            50% { opacity: 0.25; transform: scale(1.05); }
+        }
+
+        /* Mascot styling */
+        .mascot-container {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            text-align: center;
+            padding: 0 300px;  /* Add padding to prevent cutoff */
+            box-sizing: border-box;
+        }
+
+        .mascot {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            object-fit: contain;
+            opacity: 0;
+            filter: drop-shadow(0 0 15px rgba(255, 0, 255, 0.5));
+            transition: all 1s ease-out;
+            z-index: 1;
+        }
+
+        .octopus {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .duck {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .mascot.visible {
+            opacity: 1;
+            left: 50px;
+        }
+
+        .duck.visible {
+            right: 50px;
+            left: auto;
+        }
+
+        @media (max-width: 1200px) {
+            .mascot-container {
+                padding: 0 200px;
+            }
+            .mascot {
+                width: 250px;
+                height: 250px;
+            }
+            .mascot.visible {
+                left: 20px;
+            }
+            .duck.visible {
+                right: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mascot-container {
+                padding: 0 150px;
+            }
+            .mascot {
+                width: 200px;
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element" style="top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="top: 20%; left: 80%; animation-delay: 1s;"></div>
+        <div class="floating-element" style="top: 50%; left: 30%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="top: 70%; left: 70%; animation-delay: 3s;"></div>
+        <div class="floating-element" style="top: 30%; left: 50%; animation-delay: 4s;"></div>
+    </div>
+    
+    <div class="logo-background"></div>
+    
+    <section class="hero">
+        <div class="mascot-container">
+            <img src="images_succint/octupus.jpg" alt="Octopus Mascot" class="mascot octopus">
+            <h1 class="title">Succinct</h1>
+            <img src="images_succint/duck.png" alt="Duck Mascot" class="mascot duck">
+        </div>
+        <p class="subtitle">Building the future of blockchain infrastructure</p>
+    </section>
+    
+    <section class="features">
+        <div class="feature-card">
+            <h3 class="feature-title">Zero-Knowledge Proofs</h3>
+            <p class="feature-description">Advanced cryptographic proofs that enable privacy-preserving computations while maintaining verifiability.</p>
+        </div>
+        <div class="feature-card">
+            <h3 class="feature-title">Scalable Solutions</h3>
+            <p class="feature-description">High-performance infrastructure designed to handle the demands of modern blockchain applications.</p>
+        </div>
+        <div class="feature-card">
+            <h3 class="feature-title">Developer Tools</h3>
+            <p class="feature-description">Comprehensive suite of tools and libraries to simplify the integration of zero-knowledge proofs.</p>
+        </div>
+    </section>
+    
+    <section class="faq-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <h3 class="faq-question">What is Succinct's Testnet "Level 1: Crisis of Trust"?</h3>
+                <p class="faq-answer">A ZKP-based testnet where users earn stars by proving Ethereum blocks or playing games with a $10 USDC deposit.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">How to join Succinct's Testnet?</h3>
+                <p class="faq-answer">Get an invite code, deposit $10 USDC, and complete tasks like proving blocks or playing Flappy Bird.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">What is SP1 Turbo?</h3>
+                <p class="faq-answer">Succinct's fastest zkVM upgrade, optimizing ZK proof costs for rollups and light clients.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">How does Succinct partner with Mantle?</h3>
+                <p class="faq-answer">Mantle uses Succinct's zkEVM to transition from an optimistic to a ZK-rollup for Ethereum scaling.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">How are stars earned in the Testnet?</h3>
+                <p class="faq-answer">Stars are gained via block proofs (~25 stars each) or games (~$0.08/star), with referral bonuses.</p>
+            </div>
+            
+            <div class="faq-item">
+                <h3 class="faq-question">What's next for Succinct?</h3>
+                <p class="faq-answer">Testnet expansion to 100K slots, mainnet launch in 3–4 months, and more ZK-powered partnerships.</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="cta-section">
+        <a href="https://x.com/SuccinctLabs" target="_blank" class="cta-button">Get Started</a>
+    </section>
+
+    <script>
+        // Add floating elements dynamically
+        function createFloatingElements() {
+            const container = document.querySelector('.floating-elements');
+            for (let i = 0; i < 10; i++) {
+                const element = document.createElement('div');
+                element.className = 'floating-element';
+                element.style.top = `${Math.random() * 100}%`;
+                element.style.left = `${Math.random() * 100}%`;
+                element.style.animationDelay = `${Math.random() * 5}s`;
+                container.appendChild(element);
+            }
+        }
+        
+        createFloatingElements();
+
+        // Delayed mascot animation
+        function showMascots() {
+            const mascots = document.querySelectorAll('.mascot');
+            mascots.forEach(mascot => {
+                mascot.classList.add('visible');
+            });
+        }
+
+        // Set timeout for mascot animation
+        setTimeout(showMascots, 2300);
+    </script>
+</body>
+</html>
