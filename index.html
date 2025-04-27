@@ -87,7 +87,7 @@
         }
         
         .title {
-            font-size: 8.5rem;
+            font-size: 6rem;
             margin: 0;
             color: white;
             text-shadow: 3px 3px 0 #e91e63,
@@ -136,7 +136,7 @@
         }
         
         .subtitle {
-            font-size: 3rem;
+            font-size: 2.2rem;
             margin: 0;
             color: white;
             text-shadow: 2px 2px 0 #e91e63,
@@ -185,8 +185,8 @@
         
         .animated-image {
             position: absolute;
-            width: 350px;
-            height: 350px;
+            width: 250px;
+            height: 250px;
             object-fit: contain;
             z-index: 10;
             opacity: 0;
@@ -796,9 +796,9 @@
         canvas.height = window.innerHeight;
 
         const cloudConfig = [
-            { name: "cloud1.png", path: "images/cloud1.png", width: 200, height: 120 },
-            { name: "cloud2.png", path: "images/cloud2.png", width: 180, height: 100 },
-            { name: "cloud3.png", path: "images/cloud3.png", width: 220, height: 110 }
+            { name: "cloud1.png", path: "succinct_images/cloud1.png", width: 200, height: 120 },
+            { name: "cloud2.png", path: "succinct_images/cloud2.png", width: 180, height: 100 },
+            { name: "cloud3.png", path: "succinct_images/cloud3.png", width: 220, height: 110 }
         ];
 
         const imageConfig = [
@@ -998,20 +998,20 @@
                 const img = document.createElement('img');
                 img.src = mascot.path;
                 img.className = 'animated-image';
-                img.style.width = '350px';
-                img.style.height = '350px';
+                img.style.width = '250px';
+                img.style.height = '250px';
                 
                 const centerX = window.innerWidth / 2;
                 const centerY = window.scrollY + (window.innerHeight / 2);
-                const offset = 500;
+                const offset = 400;
                 const verticalOffset = 50;
                 
                 if (mascot.position === 'left') {
-                    img.style.left = `${centerX - offset - 250}px`;
-                    img.style.top = `${centerY - 300 + verticalOffset}px`;
+                    img.style.left = `${centerX - offset - 200}px`;
+                    img.style.top = `${centerY - 200 + verticalOffset}px`;
                 } else {
                     img.style.left = `${centerX + offset - 100}px`;
-                    img.style.top = `${centerY - 300 + verticalOffset}px`;
+                    img.style.top = `${centerY - 200 + verticalOffset}px`;
                 }
                 
                 img.style.animation = mascot.animation;
